@@ -14,8 +14,17 @@ EOF
 
 sudo sysctl --system
 
-sudo apt-get update
-sudo apt-get -y install containerd
+wget -q https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz
+sudo tar Czxvf /usr/local containerd-1.6.8-linux-amd64.tar.gz
+
+wget -q https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+sudo mv containerd.service /usr/lib/systemd/system/
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now containerd
+
+wget -q https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
+sudo install -m 755 runc.amd64 /usr/local/sbin/runc
 
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
