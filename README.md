@@ -1,6 +1,6 @@
 # Kubernetes Cluster Playground Environment
 
-Kubernetes playground cluster based on Vagrant, `kubeadm`, `containerd` and Calico
+Kubernetes playground cluster based on Vagrant, `kubeadm` and CRI-O
 
 ## Setup
 
@@ -21,5 +21,5 @@ To change feature flags, modify `./kubernetes/kubeadm-config.yaml`
 View containers:
 
 ```shell
-crictl --runtime-endpoint unix:///var/run/containerd/containerd.sock ps
+crictl ps
 ```
