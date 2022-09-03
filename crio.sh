@@ -19,8 +19,52 @@ echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers
 
 curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_22.04/Release.key | apt-key add -
 
-apt-get update -y
-apt-get install cri-o cri-o-runc -y
+# https://github.com/cri-o/cri-o/blob/main/install.md#debian-bullseye-or-higher---ubuntu-2004-or-higher
+apt-get update -qq && apt-get install -y \
+  libbtrfs-dev \
+  containers-common \
+  git \
+  golang-go \
+  libassuan-dev \
+  libdevmapper-dev \
+  libglib2.0-dev \
+  libc6-dev \
+  libgpgme-dev \
+  libgpg-error-dev \
+  libseccomp-dev \
+  libsystemd-dev \
+  libselinux1-dev \
+  pkg-config \
+  go-md2man \
+  cri-o-runc \
+  libudev-dev \
+  software-properties-common \
+  gcc \
+  make \
+  runc
+
+git clone https://github.com/adrianreber/cri-o.git
+cd cri-o
+make
+sudo make install
+sudo make install.config
+sudo make install.systemd
+
+sudo cp contrib/cni/10-crio-bridge.conf /etc/cni/net.d
+cd ..
+
+git clone https://github.com/containernetworking/plugins
+cd plugins
+git checkout v1.1.1
+./build_linux.sh
+sudo mkdir -p /opt/cni/bin
+sudo cp bin/* /opt/cni/bin/
+cd ..
+
+git clone https://github.com/containers/conmon
+cd conmon
+make
+sudo make install
 
 sudo systemctl daemon-reload
 sudo systemctl enable crio
