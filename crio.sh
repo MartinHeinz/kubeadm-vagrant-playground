@@ -24,7 +24,6 @@ apt-get update -qq && apt-get install -y \
   libbtrfs-dev \
   containers-common \
   git \
-  golang-go \
   libassuan-dev \
   libdevmapper-dev \
   libglib2.0-dev \
@@ -43,13 +42,20 @@ apt-get update -qq && apt-get install -y \
   make \
   runc
 
+curl -OLs https://golang.org/dl/go1.19.linux-amd64.tar.gz
+sudo tar -C /usr/local -xvf go1.19.linux-amd64.tar.gz
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
+source ~/.profile
+
 git clone https://github.com/adrianreber/cri-o.git
 cd cri-o
+git checkout checkpoint-restore-support-oci
 make
-sudo make install
-sudo make install.config
-sudo make install.systemd
+make install
+make install.config
+make install.systemd
 
+sudo mkdir -p /etc/cni/net.d
 sudo cp contrib/cni/10-crio-bridge.conf /etc/cni/net.d
 cd ..
 
@@ -57,14 +63,15 @@ git clone https://github.com/containernetworking/plugins
 cd plugins
 git checkout v1.1.1
 ./build_linux.sh
-sudo mkdir -p /opt/cni/bin
-sudo cp bin/* /opt/cni/bin/
+mkdir -p /opt/cni/bin
+cp bin/* /opt/cni/bin/
 cd ..
 
 git clone https://github.com/containers/conmon
 cd conmon
 make
-sudo make install
+make install
+cd ..
 
 sudo systemctl daemon-reload
 sudo systemctl enable crio
