@@ -73,6 +73,11 @@ make
 make install
 cd ..
 
+# Enable CRIU support in /etc/crio/crio.conf (enable_criu_support = true)
+sed -i -e 's/# enable_criu_support = false/enable_criu_support = true/g' /etc/crio/crio.conf
+
+sudo apt install criu
+
 sudo systemctl daemon-reload
 sudo systemctl enable crio
 sudo systemctl start crio
