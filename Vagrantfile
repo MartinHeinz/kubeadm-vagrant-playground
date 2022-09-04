@@ -70,8 +70,8 @@ Vagrant.configure("2") do |config|
         end
 
         node.vm.provision "setup-dns", type: "shell", :path => "update-dns.sh"
-        # node.vm.provision "containerd", type: "shell", :path => "containerd.sh"
-        node.vm.provision "crio", type: "shell", :path => "crio.sh"
+        node.vm.provision "containerd", type: "shell", :path => "containerd.sh"
+        # node.vm.provision "crio", type: "shell", :path => "crio.sh"
         node.vm.provision "kube-tools", type: "shell", :path => "kube-tools.sh"
         node.vm.provision "create-cluster-master", type: "shell", :path => "create-cluster-master.sh"
         # node.vm.provision "cni", type: "shell", :path => "cni.sh"
