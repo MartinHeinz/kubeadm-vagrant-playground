@@ -74,6 +74,7 @@ cd ..
 
 # Enable CRIU support in /etc/crio/crio.conf (enable_criu_support = true)
 sed -i -e 's/# enable_criu_support = false/enable_criu_support = true/g' /etc/crio/crio.conf
+sed -i -e 's/# drop_infra_ctr = true/drop_infra_ctr = false/g' /etc/crio/crio.conf
 
 sudo apt install criu -y
 
