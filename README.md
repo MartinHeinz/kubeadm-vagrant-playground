@@ -23,3 +23,9 @@ View containers:
 ```shell
 crictl ps
 ```
+
+-----
+
+If you find this useful, you can support me on Ko-Fi (Donations are always appreciated, but never required):
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K6F4XN6)
