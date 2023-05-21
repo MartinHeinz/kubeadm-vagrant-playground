@@ -35,7 +35,7 @@ sed -i -e "s|host    all             all             127.0.0.1/32            tru
 
 systemctl restart postgresql.service
 
-cp kine.sh /usr/bin/kine.sh
-cp kine.service /lib/systemd/system/kine.service
+cp /vagrant/kine.sh /usr/bin/kine.sh
+cp /vagrant/kine.service /lib/systemd/system/kine.service
 
 systemctl start kine.service
