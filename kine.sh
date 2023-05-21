@@ -6,29 +6,25 @@ install -m 755 kine-amd64 /usr/local/sbin/kine && rm kine-amd64
 apt -y install postgresql postgresql-contrib
 systemctl start postgresql.service
 
-openssl req -new -nodes -text -out root.csr \
-  -keyout root.key -subj "/CN=localhost"
-chmod og-rwx root.key
+# Generate self signed root CA cert
+openssl req -addext "subjectAltName = DNS:localhost" -nodes -x509 -newkey rsa:2048 -keyout ca.key -out ca.crt -subj "/CN=localhost"
 
-openssl x509 -req -in root.csr -text -days 3650 \
-  -extfile /etc/ssl/openssl.cnf -extensions v3_ca \
-  -signkey root.key -out root.crt
+# Generate server cert to be signed
+openssl req -addext "subjectAltName = DNS:localhost" -nodes -newkey rsa:2048 -keyout server.key -out server.csr -subj "/CN=localhost"
 
-openssl req -new -nodes -text -out server.csr \
-  -keyout server.key -subj "/CN=localhost"
+# Sign the server cert
+openssl x509 -extfile <(printf "subjectAltName=DNS:localhost") -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt
+
+chmod og-rwx ca.key
 chmod og-rwx server.key
 
-openssl x509 -req -in server.csr -text -days 365 \
-  -CA root.crt -CAkey root.key -CAcreateserial \
-  -out server.crt
-
-cp {server.crt,server.key,root.crt} /var/lib/postgresql/
+cp {server.crt,server.key,ca.crt} /var/lib/postgresql/
 chown postgres.postgres /var/lib/postgresql/server.key
-cp {server.crt,server.key,root.crt} /home/vagrant
+cp {server.crt,server.key,ca.crt} /home/vagrant
 
 sed -i -e "s|ssl_cert_file.*|ssl_cert_file = '/var/lib/postgresql/server.crt'|g" /etc/postgresql/14/main/postgresql.conf
 sed -i -e "s|ssl_key_file.*|ssl_key_file = '/var/lib/postgresql/server.key'|g" /etc/postgresql/14/main/postgresql.conf
-sed -i -e "s|#ssl_ca_file.*|ssl_ca_file = '/var/lib/postgresql/root.crt'|g" /etc/postgresql/14/main/postgresql.conf
+sed -i -e "s|#ssl_ca_file.*|ssl_ca_file = '/var/lib/postgresql/ca.crt'|g" /etc/postgresql/14/main/postgresql.conf
 
 # Edit /etc/postgresql/14/main/pg_hba.conf
 # Change line to 'host    all             all             127.0.0.1/32            trust'
@@ -41,6 +37,6 @@ sed -i -e "s|host    all             all             127.0.0.1/32            tru
 systemctl restart postgresql.service
 
 # https://github.com/k3s-io/kine/issues/76
-kine --endpoint "postgres://postgres:somepass@tcp(localhost:5432)/postgres" --ca-file root.crt --cert-file server.crt --key-file server.key
+kine --endpoint "postgres://postgres:somepass@localhost:5432/postgres" --ca-file ca.crt --cert-file server.crt --key-file server.key
 
 # TODO kubeadm
