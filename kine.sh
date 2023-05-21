@@ -20,7 +20,6 @@ chmod og-rwx server.key
 
 cp {server.crt,server.key,ca.crt} /var/lib/postgresql/
 chown postgres.postgres /var/lib/postgresql/server.key
-cp {server.crt,server.key,ca.crt} /home/vagrant
 
 sed -i -e "s|ssl_cert_file.*|ssl_cert_file = '/var/lib/postgresql/server.crt'|g" /etc/postgresql/14/main/postgresql.conf
 sed -i -e "s|ssl_key_file.*|ssl_key_file = '/var/lib/postgresql/server.key'|g" /etc/postgresql/14/main/postgresql.conf
@@ -37,6 +36,5 @@ sed -i -e "s|host    all             all             127.0.0.1/32            tru
 systemctl restart postgresql.service
 
 # https://github.com/k3s-io/kine/issues/76
-kine --endpoint "postgres://postgres:somepass@localhost:5432/postgres" --ca-file ca.crt --cert-file server.crt --key-file server.key
-
-# TODO kubeadm
+# TODO This does not start?
+nohup kine --endpoint "postgres://postgres:somepass@localhost:5432/postgres" --ca-file /home/vagrant/ca.crt --cert-file /home/vagrant/server.crt --key-file /home/vagrant/server.key &

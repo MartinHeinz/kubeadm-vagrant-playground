@@ -6,22 +6,12 @@ localAPIEndpoint:
 nodeRegistration:
   criSocket: "unix:///var/run/crio/crio.sock"
 ---
-apiVersion: kubelet.config.k8s.io/v1beta1
-kind: KubeletConfiguration
-featureGates:
-  ContainerCheckpoint: true
----
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: v1.25.0
-apiServer:
-  extraArgs:
-    feature-gates: "ContainerCheckpoint=true"
-controllerManager:
-  extraArgs:
-    feature-gates: "ContainerCheckpoint=true"
-scheduler:
-  extraArgs:
-    feature-gates: "ContainerCheckpoint=true"
 networking:
   podSubnet: 10.244.0.0/16
+etcd:
+  external:
+    endpoints:
+    - http://127.0.0.1:2379
