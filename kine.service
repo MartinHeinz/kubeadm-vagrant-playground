@@ -1,0 +1,17 @@
+[Unit]
+Description=Kine
+
+[Service]
+Type=simple
+User=root
+Group=root
+TimeoutStartSec=0
+Restart=on-failure
+RestartSec=30s
+#ExecStartPre=
+ExecStart=/usr/bin/kine.sh
+SyslogIdentifier=Kine
+#ExecStop=
+
+[Install]
+WantedBy=multi-user.target
