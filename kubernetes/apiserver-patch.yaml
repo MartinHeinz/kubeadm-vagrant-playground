@@ -1,0 +1,23 @@
+spec:
+  containers:
+  - image: rancher/kine:v0.10.1-amd64
+    name: kine
+    securityContext:
+      runAsUser: 0
+      runAsGroup: 0
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ 'kine --endpoint="postgres://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@localhost:5432/postgres" --ca-file=/var/lib/postgresql/ca.crt --cert-file=/var/lib/postgresql/server.crt --key-file=/var/lib/postgresql/server.key' ]
+    env:
+      - name: POSTGRES_USERNAME  # This should be secret
+        value: "postgres"
+      - name: POSTGRES_PASSWORD  # This should be secret
+        value: "somepass"
+    volumeMounts:
+      - mountPath: /var/lib/postgresql/
+        name: kine-ssl
+        readOnly: true
+  volumes:
+    - hostPath:
+        path: /var/lib/postgresql
+        type: DirectoryOrCreate
+      name: kine-ssl

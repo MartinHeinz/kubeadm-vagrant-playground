@@ -1,2 +1,2 @@
 #!/bin/bash
-/usr/local/sbin/kine --endpoint "postgres://postgres:somepass@localhost:5432/postgres" --ca-file /home/vagrant/ca.crt --cert-file /home/vagrant/server.crt --key-file /home/vagrant/server.key
+/usr/local/sbin/kine --endpoint "postgres://postgres:somepass@localhost:5432/postgres" --ca-file /var/lib/postgresql/ca.crt --cert-file /var/lib/postgresql/server.crt --key-file /var/lib/postgresql/server.key

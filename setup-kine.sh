@@ -1,8 +1,5 @@
 sudo su -
 
-wget -q https://github.com/k3s-io/kine/releases/download/v0.10.1/kine-amd64
-install -m 755 kine-amd64 /usr/local/sbin/kine && rm kine-amd64
-
 apt -y install postgresql postgresql-contrib
 systemctl start postgresql.service
 
@@ -34,8 +31,3 @@ psql -U postgres -p 5432 -h 127.0.0.1 -c "ALTER ROLE postgres WITH PASSWORD 'som
 sed -i -e "s|host    all             all             127.0.0.1/32            trust|host    all             all             127.0.0.1/32            scram-sha-256|g" /etc/postgresql/14/main/pg_hba.conf
 
 systemctl restart postgresql.service
-
-cp /vagrant/kine.sh /usr/bin/kine.sh
-cp /vagrant/kine.service /lib/systemd/system/kine.service
-
-systemctl start kine.service
