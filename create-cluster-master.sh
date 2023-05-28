@@ -1,6 +1,6 @@
 sudo su -
 
-kubeadm init --config=/vagrant/kubernetes/kubeadm-config.yaml --upload-certs --ignore-preflight-errors ExternalEtcdVersion || true
+kubeadm init --config=/vagrant/kubernetes/kubeadm-config.yaml --upload-certs --ignore-preflight-errors ExternalEtcdVersion 2>&1 || true
 
 yq '. *+ load("/vagrant/kubernetes/apiserver-patch.yaml")' /vagrant/kubernetes/kube-apiserver.yaml > /etc/kubernetes/manifests/kube-apiserver.yaml
 

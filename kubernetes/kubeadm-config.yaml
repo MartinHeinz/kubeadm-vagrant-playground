@@ -15,3 +15,5 @@ etcd:
   external:
     endpoints:
     - http://127.0.0.1:2379
+apiServer:
+  timeoutForControlPlane: 1m0s
