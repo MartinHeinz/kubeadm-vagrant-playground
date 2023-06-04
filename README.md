@@ -2,6 +2,12 @@
 
 Kubernetes playground cluster based on Vagrant, `kubeadm` and CRI-O
 
+Branches:
+
+- `master` - General purpose cluster
+- `container-checkpoint-api` - Configuration that supports Kubernetes Checkpointing API ([more info](https://martinheinz.dev/blog/85))
+- `k8s-without-etcd` - Cluster that uses PostgreSQL database instead of `etcd`
+
 ## Setup
 
 ```shell
